@@ -8,13 +8,15 @@ import com.denkh.user.exception.RoleValidationException;
 import com.denkh.user.mapper.RoleMapper;
 import com.denkh.user.repository.RoleRepository;
 import com.denkh.user.service.RoleService;
-import com.denkh.user.service.UserService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 
 import java.util.List;
+import java.util.Set;
 
+@Slf4j
 @Service
 public class RoleServiceImpl implements RoleService {
 
@@ -31,7 +33,7 @@ public class RoleServiceImpl implements RoleService {
         if (!StringUtils.hasText(createRoleRequestDto.getName())) {
             throw new RoleValidationException("name", "Role name cannot be empty");
         }
-        if(roleRepository.findByName(createRoleRequestDto.getName()).isPresent()) {
+        if (roleRepository.findByName(createRoleRequestDto.getName()).isPresent()) {
             throw new RoleValidationException("name", "Role already exists");
         }
 
@@ -43,13 +45,28 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public CreateRoleResponseDto update(Long id, CreateRoleRequestDto createRoleRequestDto) {
+        Role role = roleRepository.findById(id).orElseThrow(() ->
+                new IllegalArgumentException("Role not found with id: " + id));
 
-        return null;
+        final String roleName = createRoleRequestDto.getName();
+
+        if (!role.getName().equals(roleName) &&
+                roleRepository.existsByName(createRoleRequestDto.getName())) {
+            throw new IllegalArgumentException("Role with name " + roleName + " already exists");
+        }
+
+        role.setName(roleName);
+        role.setStatus(Constant.ACTIVE);
+        role.setDescription(createRoleRequestDto.getDescription());
+        roleRepository.save(role);
+        return roleMapper.toCreateRoleResponseDto(role);
     }
 
     @Override
     public CreateRoleResponseDto findById(Long id) {
-        return null;
+        Role role = roleRepository.findById(id).orElseThrow(() ->
+                new IllegalArgumentException("Role not found with id: " + id));
+        return roleMapper.toCreateRoleResponseDto(role);
     }
 
     @Override
@@ -60,12 +77,28 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
+    public List<Role> findByNameIn(Set<String> roleNames) {
+        return roleRepository.findAllByNameIn(roleNames);
+    }
+
+    @Override
     public List<CreateRoleResponseDto> findAll() {
-        return List.of();
+        List<Role> roles = roleRepository.findAll();
+        return convertToResponseList(roles);
     }
 
     @Override
     public List<CreateRoleResponseDto> findAllRoleActive(String status) {
-        return List.of();
+        List<Role> roles = roleRepository.findAllByStatus(status);
+        return convertToResponseList(roles);
+    }
+
+    private List<CreateRoleResponseDto> convertToResponseList(List<Role> roles) {
+
+        if (roles.isEmpty()) {
+            return List.of();
+        }
+        return roles.stream()
+                .map(roleMapper::toCreateRoleResponseDto).toList();
     }
 }

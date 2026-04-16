@@ -3,22 +3,20 @@ package com.denkh.user.service.impl;
 import com.denkh.user.constant.Constant;
 import com.denkh.user.dto.request.CreateUserRequestDto;
 import com.denkh.user.dto.response.AuthResponse;
-import com.denkh.user.dto.response.CreateRoleResponseDto;
-import com.denkh.user.dto.response.CreateUserResponseDto;
-import com.denkh.user.entity.Role;
+import com.denkh.user.entity.Group;
 import com.denkh.user.entity.User;
 import com.denkh.user.exception.UserValidationException;
 import com.denkh.user.mapper.UserMapper;
+import com.denkh.user.repository.GroupRepository;
 import com.denkh.user.repository.RoleRepository;
 import com.denkh.user.repository.UserRepository;
-import com.denkh.user.service.RoleService;
 import com.denkh.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
-import java.util.Set;
+
 
 @Service
 @RequiredArgsConstructor
@@ -26,7 +24,7 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
-    private final RoleService roleService;
+    private final GroupRepository groupRepository;
     private final UserMapper userMapper;
 
 
@@ -53,6 +51,13 @@ public class UserServiceImpl implements UserService {
         } else {
             roleRepository.findAllByNameIn(createUserRequestDto.getRoles()).forEach(user::addRole);
         }
+
+        //handle group
+        if(createUserRequestDto.getGroups() != null && !createUserRequestDto.getGroups().isEmpty()) {
+            List<Group> groups = groupRepository.findAllByNameIn(createUserRequestDto.getGroups());
+            groups.forEach(user::addGroup);
+        }
+
         userRepository.save(user);
 
         return new AuthResponse();
