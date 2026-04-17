@@ -7,7 +7,7 @@ import java.util.Set;
 
 @Data
 public class CreateGroupRequestDto {
-    private Long id;
+//    private Long id;
     private String name;
     private String description;
     private Set<String> roles;

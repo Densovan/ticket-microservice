@@ -55,9 +55,9 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public CreateGroupResponseDto updateGroup(Long id, CreateGroupRequestDto request) {
-        Group group = groupRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Group not found with id: " + id));
+    public CreateGroupResponseDto updateGroup(Long groupId, CreateGroupRequestDto request) {
+        Group group = groupRepository.findById(groupId)
+                .orElseThrow(() -> new RuntimeException("Group not found with id: " + groupId));
 
         final String groupName = request.getName();
         if (groupName != null && !groupName.equals(group.getName())) {
