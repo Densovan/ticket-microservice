@@ -1,17 +1,19 @@
 package com.denkh.user.service;
 
-import com.denkh.user.dto.request.CreateGroupRequestDto;
+import com.denkh.common.exception.ResponseErrorTemplate;
+import com.denkh.user.dto.request.CreateGroupRequest;
 import com.denkh.user.dto.request.GroupMemberRequest;
-import com.denkh.user.dto.response.CreateGroupResponseDto;
+
+
+
 
 public interface GroupService {
 
-    CreateGroupResponseDto createGroup(CreateGroupRequestDto request);
+    ResponseErrorTemplate createGroup(CreateGroupRequest request);
 
-    CreateGroupResponseDto updateGroup(Long id, CreateGroupRequestDto request);
+    ResponseErrorTemplate updateGroup(Long id, CreateGroupRequest request);
 
-    CreateGroupResponseDto addMemberToGroup(Long id,GroupMemberRequest groupMemberRequest);
+    ResponseErrorTemplate addMembersToGroup(Long groupId, GroupMemberRequest groupMemberRequest);
 
-    CreateGroupResponseDto removeMembersFromGroup(Long id,GroupMemberRequest groupMemberRequest);
-
+    ResponseErrorTemplate removeMembersFromGroup(Long groupId, GroupMemberRequest groupMemberRequest);
 }

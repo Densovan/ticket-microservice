@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+
+
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class CreateUserResponseDto extends BaseDto {
@@ -25,6 +27,7 @@ public class CreateUserResponseDto extends BaseDto {
 
     @JsonProperty("phone_number")
     private String phoneNumber;
+
 
 
 }

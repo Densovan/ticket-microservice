@@ -3,38 +3,48 @@ package com.denkh.user.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.Set;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class CreateUserRequestDto {
-
+    @JsonProperty("id")
+    private Long id;
     @JsonProperty("username")
     private String username;
-
-    @JsonProperty("email")
-    private String email;
-
-    @JsonProperty("password")
-    private String password;
-
     @JsonProperty("first_name")
     private String firstName;
-
     @JsonProperty("last_name")
     private String lastName;
-
-    @JsonProperty("phone_number")
-    private String phoneNumber;
-
+    @JsonProperty("user_img")
+    private String userImg;
+    @JsonProperty("password")
+    private String password;
+    @JsonProperty("email")
+    private String email;
+    @JsonProperty("user_type")
+    private String userType;
+    @JsonProperty("gender")
+    private String gender;
+    @JsonProperty("date_of_birth")
+    private String dateOfBirth;
+    @JsonProperty("last_login")
+    private String lastLogin;
+    @JsonProperty("login_attempt")
+    private Integer loginAttempt;
+    @JsonProperty("max_attempt")
+    private Integer maxAttempt;
+    @JsonProperty("enable_allocate")
+    private Boolean enableAllocate;
     @JsonProperty("status")
     private String status;
-
-    @JsonProperty
+    @JsonProperty("roles")
     private Set<String> roles;
-
-    @JsonProperty
+    @JsonProperty("groups")
     private Set<String> groups;
-
 }
