@@ -1,4 +1,4 @@
-package com.denkh.user.service;
+package com.denkh.user.service.impl;
 
 import com.denkh.common.criteria.BaseSearchCriteria;
 import com.denkh.common.criteria.JoinCriteria;
@@ -8,6 +8,7 @@ import com.denkh.common.dto.PageableRequestVO;
 import com.denkh.common.dto.PageableResponseVO;
 import com.denkh.user.dto.request.UserFilterRequest;
 import com.denkh.user.entity.User;
+import com.denkh.user.service.UserSearchService;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.CriteriaBuilder;

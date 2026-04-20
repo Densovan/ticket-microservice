@@ -21,8 +21,8 @@ public class CreateUserRequestDto {
     private String firstName;
     @JsonProperty("last_name")
     private String lastName;
-    @JsonProperty("user_img")
-    private String userImg;
+    @JsonProperty("user_image")
+    private String userImage;
     @JsonProperty("password")
     private String password;
     @JsonProperty("email")

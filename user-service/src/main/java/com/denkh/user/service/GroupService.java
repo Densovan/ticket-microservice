@@ -16,4 +16,6 @@ public interface GroupService {
     ResponseErrorTemplate addMembersToGroup(Long groupId, GroupMemberRequest groupMemberRequest);
 
     ResponseErrorTemplate removeMembersFromGroup(Long groupId, GroupMemberRequest groupMemberRequest);
+
+    ResponseErrorTemplate getGroupMembers(Long groupId);
 }

@@ -10,7 +10,7 @@ public record UserResponse(
         @JsonProperty("username") String username,
         @JsonProperty("first_name") String firstName,
         @JsonProperty("last_name") String lastName,
-        @JsonProperty("user_img") String userImg,
+        @JsonProperty("user_image") String userImage,
         @JsonProperty("gender") String gender,
         @JsonProperty("date_of_birth") String dateOfBirth,
         @JsonProperty("password") String password,
@@ -23,5 +23,4 @@ public record UserResponse(
         @JsonProperty("status") String status,
         @JsonProperty("roles") List<String> roles
 ) {
-
 }

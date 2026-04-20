@@ -9,7 +9,7 @@ public record UserRequest(
         @JsonProperty("username") String username,
         @JsonProperty("first_name") String firstName,
         @JsonProperty("last_name") String lastName,
-        @JsonProperty("user_img") String userImg,
+        @JsonProperty("user_image") String userImage,
         @JsonProperty("password") String password,
         @JsonProperty("email") String email,
         @JsonProperty("user_type") String userType,

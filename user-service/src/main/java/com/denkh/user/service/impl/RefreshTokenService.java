@@ -13,6 +13,7 @@ import com.denkh.user.entity.RefreshToken;
 import com.denkh.user.entity.User;
 import com.denkh.user.repository.RefreshTokenRepository;
 import com.denkh.user.repository.UserRepository;
+import com.denkh.user.service.JwtService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -31,6 +32,7 @@ public class RefreshTokenService {
     private final UserRepository userRepository;
     private final RefreshTokenRepository refreshTokenRepository;
     private final CustomUserDetailService customUserDetailService;
+    private final JwtService jwtService;
 
 
     public void createRefreshToken(String username, String token, Date tokenExpiration) {
@@ -69,8 +71,9 @@ public class RefreshTokenService {
                     .map(this::verifyExpiration)
                     .map(RefreshToken::getUser)
                     .map(userInfo -> {
-                        final CustomUserDetail customUserDetail = customUserDetailService.customUserDetail(userInfo.getUsername());
-                        final String accessToken = "SSS";//jwtService.generateToken(customUserDetail);
+                         CustomUserDetail customUserDetail = customUserDetailService.customUserDetail(userInfo.getUsername());
+                        final String accessToken = jwtService.generateToken(customUserDetail); //jwtService.generateToken(customUserDetail);
+//                        final String accessToken = "SS";
                         var responseToken = new AuthenticationResponse(accessToken, refreshTokenRequest.refreshToken());
                         return new ResponseErrorTemplate(
                                 ApiConstant.REFRESH_TOKEN_SUCCESS.getDescription(),

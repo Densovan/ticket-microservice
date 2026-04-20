@@ -10,11 +10,6 @@ import org.springframework.web.bind.annotation.*;
 
 
 import com.denkh.common.exception.ResponseErrorTemplate;
-import com.denkh.user.dto.request.CreateGroupRequest;
-import com.denkh.user.dto.request.GroupMemberRequest;
-import com.denkh.user.service.GroupService;
-import jakarta.validation.Valid;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -51,6 +46,13 @@ public class GroupController {
             @PathVariable Long groupId,
             @Valid @RequestBody GroupMemberRequest request) {
         return ResponseEntity.ok(groupService.removeMembersFromGroup(groupId, request));
+    }
+
+    @GetMapping("/{groupId}/members")
+    public ResponseEntity<ResponseErrorTemplate> getGroupMembers(
+            @PathVariable Long groupId
+    ) {
+        return ResponseEntity.ok(groupService.getGroupMembers(groupId));
     }
 
 }

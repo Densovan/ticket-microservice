@@ -1,12 +1,17 @@
 package com.denkh.user.service.impl;
 
 
+import com.denkh.common.constant.ApiConstant;
 import com.denkh.common.dto.EmptyObject;
 import com.denkh.common.exception.CustomMessageException;
 import com.denkh.common.exception.ResponseErrorTemplate;
 import com.denkh.user.config.properties.JwtConfigProperties;
 import com.denkh.user.entity.CustomUserDetail;
+import com.denkh.user.entity.RefreshToken;
+import com.denkh.user.entity.User;
 import com.denkh.user.jwt.JwtSecret;
+import com.denkh.user.repository.RefreshTokenRepository;
+import com.denkh.user.repository.UserRepository;
 import com.denkh.user.service.JwtService;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.SignatureException;
@@ -29,8 +34,11 @@ import java.util.stream.Collectors;
 public class JwtServiceImpl extends JwtConfigProperties implements JwtService {
 
     private final JwtSecret jwtSecret;
-    private final RefreshTokenService refreshTokenService;
+//    private final RefreshTokenService refreshTokenService;
     private final CustomUserDetailService userDetailService;
+    private final UserRepository userRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
+
 
 
     @Override
@@ -82,7 +90,7 @@ public class JwtServiceImpl extends JwtConfigProperties implements JwtService {
                 .setExpiration(tokenExpiration)
                 .signWith(getKey(), SignatureAlgorithm.HS256)
                 .compact();
-        refreshTokenService.createRefreshToken(customUserDetail.getUsername(), refreshToken, tokenExpiration);
+        createRefreshToken(customUserDetail.getUsername(), refreshToken, tokenExpiration);
         return refreshToken;
     }
 
@@ -185,5 +193,35 @@ public class JwtServiceImpl extends JwtConfigProperties implements JwtService {
                     HttpStatus.UNAUTHORIZED);
         }
     }
+    private void createRefreshToken(String username, String token, Date tokenExpiration) {
+        Optional<User> user = userRepository.findFirstByUsernameAndStatus(username, ApiConstant.ACTIVE.getKey());
+        if (user.isEmpty()) {
+            log.error("User not found with username: {}", username);
+            throw new CustomMessageException(
+                    ApiConstant.USER_NAME_NOT_FOUND.getDescription(),
+                    ApiConstant.USER_NAME_NOT_FOUND.getKey(),
+                    new EmptyObject(),
+                    HttpStatus.NOT_FOUND);
+        }
+
+        RefreshToken refreshToken;
+        Optional<RefreshToken> refreshTokenOptional = refreshTokenRepository.findByUser(user.get());
+        if(refreshTokenOptional.isPresent()) {
+            log.info("Refresh refreshToken already exists..!");
+            refreshToken = refreshTokenOptional.get();
+            refreshToken.setToken(token);
+            refreshToken.setExpiryDate(tokenExpiration);
+
+        }else {
+            refreshToken = RefreshToken.builder()
+                    .user(user.get())
+                    .token(token)
+                    .expiryDate(tokenExpiration)
+                    .build();
+        }
+        log.info("Refresh refreshToken created successfully..!");
+        refreshTokenRepository.save(refreshToken);
+    }
+
 
 }

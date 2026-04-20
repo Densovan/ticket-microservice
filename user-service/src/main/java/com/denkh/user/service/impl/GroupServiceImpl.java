@@ -1,6 +1,7 @@
 package com.denkh.user.service.impl;
 
 import com.denkh.common.constant.ApiConstant;
+import com.denkh.common.dto.UserResponse;
 import com.denkh.common.exception.ResponseErrorTemplate;
 import com.denkh.user.constant.Constant;
 import com.denkh.user.dto.request.CreateGroupRequest;
@@ -10,6 +11,7 @@ import com.denkh.user.entity.Group;
 import com.denkh.user.entity.Permission;
 import com.denkh.user.entity.Role;
 import com.denkh.user.entity.User;
+import com.denkh.user.handler.UserHandlerService;
 import com.denkh.user.repository.GroupRepository;
 import com.denkh.user.repository.RoleRepository;
 import com.denkh.user.repository.UserRepository;
@@ -33,6 +35,7 @@ public class GroupServiceImpl implements GroupService {
     private final UserRepository userRepository;
     private final GroupRepository groupRepository;
     private final PermissionService permissionService;
+    private final UserHandlerService userHandlerService;
 
 
     @Override
@@ -124,9 +127,27 @@ public class GroupServiceImpl implements GroupService {
         return constructGroupResponse(updatedGroup);
     }
 
+    @Override
+    public ResponseErrorTemplate getGroupMembers(Long groupId) {
+        Group group = groupRepository.findById(groupId).orElseThrow(() ->
+                new RuntimeException("Group not found with id: " + groupId));
+
+        List<UserResponse> userResponses = group.getUsers()
+                .stream()
+                .map(userHandlerService::mapUserToUserResponse)
+                .toList();
+
+        return new ResponseErrorTemplate(
+                ApiConstant.SUCCESS.getDescription(),
+                ApiConstant.SUCCESS.getKey(),
+                userResponses,
+                false
+        );
+    }
+
 
     private ResponseErrorTemplate constructGroupResponse(Group group) {
-        GroupResponse groupResponse = new  GroupResponse(
+        GroupResponse groupResponse = new GroupResponse(
                 group.getId(),
                 group.getName(),
                 group.getDescription(),
@@ -156,5 +177,26 @@ public class GroupServiceImpl implements GroupService {
 
         return group;
     }
+
+//    public UserResponse mapUserToUserResponse(final User user) {
+//        return new UserResponse(
+//                user.getId(),
+//                user.getUsername(),
+//                user.getFirstName(),
+//                user.getLastName(),
+//                user.getUserImage(),
+//                user.getGender(),
+//                user.getDateOfBirth(),
+//                user.getPassword(),
+//                user.getEmail(),
+//                user.getFirstName() + " " + user.getLastName(),
+//                user.getCreatedAt(),
+//                user.getLastLogin(),
+//                user.getLoginAttempt(),
+//                user.getMaxAttempt(),
+//                user.getStatus(),
+//                user.getRoles().stream().map(Role::getName).toList()
+//        );
+//    }
 
 }

@@ -5,7 +5,6 @@ import com.denkh.common.dto.EmptyObject;
 import com.denkh.common.dto.UserResponse;
 import com.denkh.common.exception.ResponseErrorTemplate;
 import com.denkh.user.dto.request.CreateUserRequestDto;
-import com.denkh.user.dto.response.CreateUserResponseDto;
 import com.denkh.user.entity.Role;
 import com.denkh.user.entity.User;
 import com.denkh.user.repository.RoleRepository;
@@ -78,7 +77,7 @@ public class UserHandlerService {
         user.setUsername(userRequest.getUsername());
         user.setFirstName(userRequest.getFirstName());
         user.setLastName(userRequest.getLastName());
-        user.setUserType(userRequest.getUserImg());
+        user.setUserType(userRequest.getUserImage());
         user.setUserType(userRequest.getUserType());
         user.setPassword(passwordEncoder.encode(userRequest.getPassword()));
         user.setEmail(userRequest.getEmail());
