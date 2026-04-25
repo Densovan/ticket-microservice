@@ -34,11 +34,10 @@ import java.util.stream.Collectors;
 public class JwtServiceImpl extends JwtConfigProperties implements JwtService {
 
     private final JwtSecret jwtSecret;
-//    private final RefreshTokenService refreshTokenService;
+    //    private final RefreshTokenService refreshTokenService;
     private final CustomUserDetailService userDetailService;
     private final UserRepository userRepository;
     private final RefreshTokenRepository refreshTokenRepository;
-
 
 
     @Override
@@ -151,7 +150,7 @@ public class JwtServiceImpl extends JwtConfigProperties implements JwtService {
         return extractClaimsTFunction(token, Claims::getSubject);
     }
 
-    private <T> T extractClaimsTFunction(String token, Function<Claims, T> claimsTFunction){
+    private <T> T extractClaimsTFunction(String token, Function<Claims, T> claimsTFunction) {
         final Claims claims = extractAllClaims(token);
         return claimsTFunction.apply(claims);
     }
@@ -163,21 +162,21 @@ public class JwtServiceImpl extends JwtConfigProperties implements JwtService {
                     .build()
                     .parseClaimsJws(token)
                     .getBody();
-        }catch (ExpiredJwtException ex) {
+        } catch (ExpiredJwtException ex) {
             log.error(ex.getLocalizedMessage());
             throw new CustomMessageException(
                     "Token expiration",
                     String.valueOf(HttpStatus.UNAUTHORIZED.value()),
                     new EmptyObject(),
                     HttpStatus.UNAUTHORIZED);
-        }catch (UnsupportedJwtException ex){
+        } catch (UnsupportedJwtException ex) {
             log.error(ex.getLocalizedMessage());
             throw new CustomMessageException(
                     "Token is not support.",
                     String.valueOf(HttpStatus.UNAUTHORIZED.value()),
                     new EmptyObject(),
                     HttpStatus.UNAUTHORIZED);
-        }catch (MalformedJwtException | SignatureException ex) {
+        } catch (MalformedJwtException | SignatureException ex) {
             log.error(ex.getLocalizedMessage());
             throw new CustomMessageException(
                     "Token is invalid format.",
@@ -193,6 +192,7 @@ public class JwtServiceImpl extends JwtConfigProperties implements JwtService {
                     HttpStatus.UNAUTHORIZED);
         }
     }
+
     private void createRefreshToken(String username, String token, Date tokenExpiration) {
         Optional<User> user = userRepository.findFirstByUsernameAndStatus(username, ApiConstant.ACTIVE.getKey());
         if (user.isEmpty()) {
@@ -206,13 +206,13 @@ public class JwtServiceImpl extends JwtConfigProperties implements JwtService {
 
         RefreshToken refreshToken;
         Optional<RefreshToken> refreshTokenOptional = refreshTokenRepository.findByUser(user.get());
-        if(refreshTokenOptional.isPresent()) {
+        if (refreshTokenOptional.isPresent()) {
             log.info("Refresh refreshToken already exists..!");
             refreshToken = refreshTokenOptional.get();
             refreshToken.setToken(token);
             refreshToken.setExpiryDate(tokenExpiration);
 
-        }else {
+        } else {
             refreshToken = RefreshToken.builder()
                     .user(user.get())
                     .token(token)

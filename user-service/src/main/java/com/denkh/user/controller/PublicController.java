@@ -2,12 +2,14 @@ package com.denkh.user.controller;
 
 import com.denkh.common.constant.ApiConstant;
 import com.denkh.common.dto.EmptyObject;
+import com.denkh.common.dto.UserRequest;
 import com.denkh.common.exception.ResponseErrorTemplate;
 import com.denkh.user.dto.request.AuthenticationRequest;
 import com.denkh.user.dto.request.CreateUserRequestDto;
 import com.denkh.user.dto.request.RefreshTokenRequest;
 import com.denkh.user.service.AuthService;
 import com.denkh.user.service.UserService;
+import com.denkh.user.service.impl.CustomUserDetailService;
 import com.denkh.user.service.impl.RefreshTokenService;
 import com.denkh.user.service.JwtService;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +28,7 @@ public class PublicController {
     private final AuthService authService;
     private final UserService userService;
     private final RefreshTokenService refreshTokenService;
+    private final CustomUserDetailService customUserDetailService;
     private final JwtService jwtService;
 
     @PostMapping("/registration")
